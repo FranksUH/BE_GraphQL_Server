@@ -12,9 +12,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Register custom services for the superheroes
-builder.Services.AddScoped<ISuperheroRepository, SuperheroRepository>();
-builder.Services.AddScoped<ISuperpowerRepository, SuperpowerRepository>();
-builder.Services.AddScoped<IMovieRepository, MovieRepository>();
+//builder.Services.AddScoped<ISuperheroRepository, SuperheroRepository>();
+//builder.Services.AddScoped<ISuperpowerRepository, SuperpowerRepository>();
+//builder.Services.AddScoped<IMovieRepository, MovieRepository>();
+builder.Services.AddGraphQLServer()
+                .AddQueryType<Query>()
+                .AddProjections()
+                .AddSorting()
+                .AddFiltering();
 
 // Add Application Db Context options
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -50,6 +55,7 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast");
 
+app.MapGraphQL("/graphql");
 app.Run();
 
 internal record WeatherForecast(DateTime Date, int TemperatureC, string? Summary)

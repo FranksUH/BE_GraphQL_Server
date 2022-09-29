@@ -1,7 +1,7 @@
 ﻿namespace DAL
 {
     using DAL.ContextConfiguration;
-    using Domain.Models;
+    using DAL.Entities;
     using Microsoft.EntityFrameworkCore;
     using System;
 
