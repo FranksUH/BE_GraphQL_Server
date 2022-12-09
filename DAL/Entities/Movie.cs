@@ -11,12 +11,17 @@
 
         [Required(ErrorMessage = "The movie title is required")]
         public string Title { get; set; }
+
+        [Required(ErrorMessage = "The movie description is required")]
         public string Description { get; set; }
+
+        [Required(ErrorMessage = "The movie instructor is required")]
         public string Instructor { get; set; }
-        public DateTime ReleaseDate { get; set; }
+
+        public DateTime? ReleaseDate { get; set; }
 
         [ForeignKey("SuperheroId")]
-        public Guid SuperheroId { get; set; }
-        public Superhero Superhero { get; set; }
+        public Guid? SuperheroId { get; set; }
+        public Superhero? Superhero { get; set; }
     }
 }
