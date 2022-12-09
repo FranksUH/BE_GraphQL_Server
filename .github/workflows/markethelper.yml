@@ -11,7 +11,7 @@ env:
   AZURE_APIM_SERVICENAME: GraphQLExampleapi
   AZURE_APIM_API_ID: GraphQLExample
   AZURE_APIM_APPSERVICEURL: https://markethelper.azurewebsites.net
-  SWASHBUCLE_ASPNET_CORE_CLI_PACKAGE_VERSION: 5.6.3
+  SWASHBUCLE_ASPNET_CORE_CLI_PACKAGE_VERSION: 6.4.0
   SWASHBUCKLE_DOTNET_CORE_VERSION: 3.1.x
   API_IMPORT_SPECIFICATION_PATH: GraphQL_Example\publish\swagger.json
   API_IMPORT_DLL: GraphQL_Example\bin\Release\net6.0\GraphQL_Example.dll
