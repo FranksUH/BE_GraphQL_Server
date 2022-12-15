@@ -6,5 +6,7 @@
     public interface ISuperheroService
     {
         IQueryable<Superhero> GetAll();
+        double? GetTallest();
+        Superhero Upsert(Superhero superhero);
     }
 }

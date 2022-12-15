@@ -18,5 +18,25 @@
         {
             return this.superheroRepo.GetAll();
         }
+
+        public double? GetTallest()
+        {
+            return this.superheroRepo.GetAll().Where(x => x.Height.HasValue).OrderByDescending(x => x.Height).FirstOrDefault()?.Height;
+        }
+
+        public Superhero Upsert(Superhero superhero)
+        {
+            if(superhero.Id != Guid.Empty)
+            {
+                Superhero existingEntity = this.superheroRepo.Find(superhero.Id);
+
+                if(existingEntity != null)
+                {
+                    return this.superheroRepo.Modify(existingEntity);
+                }
+            }
+
+            return this.superheroRepo.Add(superhero);
+        }
     }
 }

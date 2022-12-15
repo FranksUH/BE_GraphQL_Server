@@ -10,6 +10,8 @@
     using DAL.Implementations;
     using Microsoft.AspNetCore.OData;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.OData.Edm;
+    using Microsoft.OData.ModelBuilder;
 
     public static class ServicesConfiguration
     {
@@ -18,10 +20,8 @@
             //Configuration to OData
             builder.Services.AddControllers()
                             .AddOData(opt => opt
-                            .Select()
-                            .Filter()
-                            .OrderBy()
-                            .Expand());
+                            .AddRouteComponents("v1", GetEdmModel())
+                            .EnableQueryFeatures());
 
             // Add services to the container.
             builder.Services.AddEndpointsApiExplorer();
@@ -53,7 +53,20 @@
 
             // Add Application Db Context options
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));           
+                options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
+        }
+
+        private static IEdmModel GetEdmModel()
+        {
+            ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
+            builder.EntitySet<Superhero>("Superheros");
+
+            builder.Namespace = "SuperheroService";
+            builder.EntityType<Superhero>().Collection
+                   .Function("GetTallest")
+                   .Returns<double?>();
+
+            return builder.GetEdmModel();
         }
     }
 }

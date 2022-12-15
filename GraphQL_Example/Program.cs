@@ -20,14 +20,5 @@ app.UseHttpsRedirection();
 app.UseWebSockets();
 app.MapGraphQL("/graphql");
 
-//Replacement for controllers, it uses DI and from httpContext it gets all info about the request
-//Add enable query
-//app.MapGet("/",
-//[EnableQuery()]
-//(ISuperheroService superheroService, HttpContext httpContext) =>
-//{
-//     return Results.Ok(superheroService.GetAll());
-//});
-
 app.MapControllers();
 app.Run();
