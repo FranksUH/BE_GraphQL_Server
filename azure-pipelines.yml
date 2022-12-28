@@ -33,6 +33,8 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
+- task: PublishBuildArtifacts@1
+
 - task: AzureRmWebAppDeployment@4
   inputs:
     ConnectionType: 'AzureRM'
@@ -41,4 +43,3 @@ steps:
     WebAppName: 'markethelper'
     packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
 
-- task: PublishBuildArtifacts@1
