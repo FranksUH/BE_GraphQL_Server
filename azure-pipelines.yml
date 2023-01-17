@@ -42,9 +42,15 @@ steps:
   inputs:
     command: 'publish'
     projects: '**/GraphQL_Example/GraphQL_Example.csproj'
-    arguments: '--no-build --no-self-contained'
+    arguments: '--no-build --no-self-contained --output $(Build.ArtifactStagingDirectory)/api'
     zipAfterPublish: false
     publishWebProjects: false
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish API Artifacts
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/api'
+    ArtifactName: API
 
 - task: DotNetCoreCLI@2
   displayName: Publish DB Project
@@ -52,8 +58,14 @@ steps:
     command: 'publish'
     publishWebProjects: false
     projects: '**/DAL/DAL.csproj'
-    arguments: '--no-build --no-self-contained'
+    arguments: '--no-build --no-self-contained --output $(Build.ArtifactStagingDirectory)/dal'
     zipAfterPublish: false
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish DAL Artifacts
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/dal'
+    ArtifactName: DAL
 
 - task: DotNetCoreCLI@2
   displayName: Install EF CLI
@@ -63,10 +75,18 @@ steps:
    arguments: 'install dotnet-ef --global'
 
 - task: DotNetCoreCLI@2
+  displayName: Generate SQL Script
+  inputs:    
+   command: 'custom'
+   custom: 'ef'
+   arguments: 'migrations script --project $(dataProjectPath) --startup-project $(dataDesignPath) --output $(Build.ArtifactStagingDirectory)/sql'
+
+- task: DotNetCoreCLI@2
   displayName: Run Migrations
   inputs:
     command: custom
-    custom: 'ef database update'
+    custom: 'ef'
+    arguments: 'database update'
 
 - task: AzureWebApp@1
   displayName: Deploy to PersonalWebSite Slot
