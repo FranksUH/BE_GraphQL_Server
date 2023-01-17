@@ -67,26 +67,26 @@ steps:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)/dal'
     ArtifactName: DAL
 
-- task: DotNetCoreCLI@2
-  displayName: Install EF CLI
-  inputs:
-   command: 'custom'
-   custom: 'tool'
-   arguments: 'install dotnet-ef --global'
+# - task: DotNetCoreCLI@2
+#   displayName: Install EF CLI
+#   inputs:
+#    command: 'custom'
+#    custom: 'tool'
+#    arguments: 'install dotnet-ef --global'
 
-- task: DotNetCoreCLI@2
-  displayName: Generate SQL Script
-  inputs:    
-   command: 'custom'
-   custom: 'ef'
-   arguments: 'migrations script --project $(dataProjectPath) --startup-project $(dataDesignPath) --output $(Build.ArtifactStagingDirectory)/sql'
+# - task: DotNetCoreCLI@2
+#   displayName: Generate SQL Script
+#   inputs:    
+#    command: 'custom'
+#    custom: 'ef'
+#    arguments: 'migrations script --project $(dataProjectPath) --startup-project $(dataDesignPath) --output $(Build.ArtifactStagingDirectory)/sql'
 
-- task: DotNetCoreCLI@2
-  displayName: Run Migrations
-  inputs:
-    command: custom
-    custom: 'ef'
-    arguments: 'database update'
+# - task: DotNetCoreCLI@2
+#   displayName: Run Migrations
+#   inputs:
+#     command: custom
+#     custom: 'ef'
+#     arguments: 'database update'
 
 - task: AzureWebApp@1
   displayName: Deploy to PersonalWebSite Slot
