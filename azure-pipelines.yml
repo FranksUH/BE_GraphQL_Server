@@ -50,7 +50,8 @@ steps:
   displayName: Publish API Artifacts
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)/api'
-    ArtifactName: API  
+    ArtifactName: API
+    publishLocation: Container
 
 - task: DotNetCoreCLI@2
   displayName: Publish DB Project
