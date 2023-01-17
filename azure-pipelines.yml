@@ -17,18 +17,6 @@ variables:
   dataDesignPath: '$(Build.SourcesDirectory)/GraphQL_Example/'
 
 steps:
-
-- task: UseDotNet@2
-  displayName: Install .Net6
-  inputs:
-   packageType: 'sdk'
-   version: '6.0.x'
-
-- task: DotNetCoreCLI@2
-  displayName: Restore all packages
-  inputs:
-    command: 'restore'
-    projects: '**/*.csproj'
     
 - task: DotNetCoreCLI@2
   displayName: Build All
@@ -61,13 +49,6 @@ steps:
    command: 'custom'
    custom: 'tool'
    arguments: 'install dotnet-ef --global'
-
-- task: DotNetCoreCLI@2
-  displayName: Generate SQL Script
-  inputs:
-   command: 'custom'
-   custom: 'ef'
-   arguments: 'migrations script --project $(dataProjectPath) --startup-project $(dataDesignPath)'
 
 - task: DotNetCoreCLI@2
   displayName: Run Migrations
