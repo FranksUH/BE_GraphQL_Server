@@ -14,7 +14,7 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   dataProjectPath: '$(Build.SourcesDirectory)/DAL/DAL.csproj'
-  dataDesignPath: '$(Build.SourcesDirectory)/GraphQL_Example/GraphQL_Example.csproj'
+  dataDesignPath: '$(Build.SourcesDirectory)/GraphQL_Example/'
 
 steps:
 
@@ -46,12 +46,6 @@ steps:
     zipAfterPublish: false
     publishWebProjects: false
 
-- task: PublishPipelineArtifact@0
-  displayName: Publish API Artifacts
-  inputs:
-    targetPath: '$(Build.ArtifactStagingDirectory)/api'
-    ArtifactName: API
-
 - task: DotNetCoreCLI@2
   displayName: Publish DB Project
   inputs:
@@ -60,12 +54,6 @@ steps:
     projects: '**/DAL/DAL.csproj'
     arguments: '--no-build --no-self-contained'
     zipAfterPublish: false
-
-- task: PublishBuildArtifacts@1
-  displayName: Publish DB Artifacts
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/db'
-    ArtifactName: 'db'
 
 - task: DotNetCoreCLI@2
   displayName: Install EF CLI
@@ -81,8 +69,20 @@ steps:
    custom: 'ef'
    arguments: 'migrations script --project $(dataProjectPath) --startup-project $(dataDesignPath)'
 
-- task: PublishBuildArtifacts@1
-  displayName: Publish SQL artifacts
+- task: DotNetCoreCLI@2
+  displayName: Run Migrations
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/sql'
-    ArtifactName: 'sql'
+    command: custom
+    custom: 'ef database update'
+
+- task: AzureWebApp@1
+  displayName: Deploy to PersonalWebSite Slot
+  inputs:
+    azureSubscription: 'Azure subscription 1(1ad07fc5-7991-4ca5-8ff5-8e5d9c7c68d0)'
+    appType: 'webApp'
+    appName: 'markethelper'
+    deployToSlotOrASE: true
+    resourceGroupName: 'PersonalWebSite'
+    slotName: 'production'
+    package: '$(System.DefaultWorkingDirectory)/GraphQL_Example.csproj'
+    deploymentMethod: 'auto'
