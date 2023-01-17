@@ -40,9 +40,11 @@ steps:
 - task: DotNetCoreCLI@2
   displayName: Publish Web Project
   inputs:
+    command: 'publish'
     projects: '**/GraphQL_Example/GraphQL_Example.csproj'
     arguments: '--no-build --no-self-contained'
     zipAfterPublish: false
+    publishWebProjects: false
 
 - task: PublishBuildArtifacts@1
   displayName: Publish API Artifacts
