@@ -6,96 +6,52 @@
 trigger:
 - master
 
-pool:
-  vmImage: 'windows-latest'
-
 variables:
   solution: '**/*.sln'
+  allProjects: '**/*.csproj'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  dataProjectPath: '$(Build.SourcesDirectory)/DAL/DAL.csproj'
-  dataDesignPath: '$(Build.SourcesDirectory)/GraphQL_Example/'
 
 steps:
 
 - task: UseDotNet@2
-  displayName: Install .Net6
+  displayName: Specify .NET 6.x version
   inputs:
-   packageType: 'sdk'
-   version: '6.0.x'
+    version: '6.x'
+    includePreviewVersions: true
 
 - task: DotNetCoreCLI@2
-  displayName: Restore all packages
+  displayName: Restore all required NuGets
   inputs:
-    command: 'restore'
-    projects: '**/*.csproj'
+    command: restore
+    projects: $(allProjects)
 
 - task: DotNetCoreCLI@2
-  displayName: Build All
+  displayName: Build Solution
   inputs:
-    command: 'build'
-    projects: '**/*.csproj'
-    arguments: '--no-restore'
-    
-- task: DotNetCoreCLI@2
-  displayName: Publish Web Project
-  inputs:
-    command: 'publish'
-    projects: '**/GraphQL_Example/GraphQL_Example.csproj'
-    arguments: '--no-build --no-self-contained --output $(Build.ArtifactStagingDirectory)/api'
-    zipAfterPublish: false
-    publishWebProjects: false
-
-- task: PublishBuildArtifacts@1
-  displayName: Publish API Artifacts
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/api'
-    ArtifactName: API
+    command: build
+    projects: $(allProjects)
+    arguments: '--configuration $(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
-  displayName: Publish DB Project
+  displayName: Publish Solution
   inputs:
-    command: 'publish'
-    publishWebProjects: false
-    projects: '**/DAL/DAL.csproj'
-    arguments: '--no-build --no-self-contained --output $(Build.ArtifactStagingDirectory)/dal'
-    zipAfterPublish: false
+    command: publish
+    publishWebProjects: true
+    arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    zipAfterPublish: True
 
-- task: PublishBuildArtifacts@1
-  displayName: Publish DAL Artifacts
+- task: PublishPipelineArtifact@1
+  displayName: Publish Artifacts
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/dal'
-    ArtifactName: DAL
+    targetPath: '$(Build.ArtifactStagingDirectory)' 
+    artifactName: 'AzurePipelinesLearning'
 
-# - task: DotNetCoreCLI@2
-#   displayName: Install EF CLI
-#   inputs:
-#    command: 'custom'
-#    custom: 'tool'
-#    arguments: 'install dotnet-ef --global'
-
-# - task: DotNetCoreCLI@2
-#   displayName: Generate SQL Script
-#   inputs:    
-#    command: 'custom'
-#    custom: 'ef'
-#    arguments: 'migrations script --project $(dataProjectPath) --startup-project $(dataDesignPath) --output $(Build.ArtifactStagingDirectory)/sql'
-
-# - task: DotNetCoreCLI@2
-#   displayName: Run Migrations
-#   inputs:
-#     command: custom
-#     custom: 'ef'
-#     arguments: 'database update'
-
-- task: AzureWebApp@1
-  displayName: Deploy to PersonalWebSite Slot
+- task: AzureRmWebAppDeployment@4
+  displayName: Deploy to Azure Slot
   inputs:
+    ConnectionType: 'AzureRM'
     azureSubscription: 'Azure subscription 1(1ad07fc5-7991-4ca5-8ff5-8e5d9c7c68d0)'
     appType: 'webApp'
-    appName: 'markethelper'
-    deployToSlotOrASE: true
-    resourceGroupName: 'PersonalWebSite'
-    slotName: 'production'
-    package: '$(System.DefaultWorkingDirectory)/GraphQL_Example.csproj'
-    deploymentMethod: 'auto'
+    WebAppName: 'markethelper'
+    packageForLinux: '$(Build.ArtifactStagingDirectory)/*.zip'
