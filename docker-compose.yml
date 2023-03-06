@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  graphql_example:
+    image: ${DOCKER_REGISTRY-}graphqlexample
+    build:
+      context: .
+      dockerfile: GraphQL_Example\Dockerfile
