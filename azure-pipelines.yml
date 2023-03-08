@@ -13,7 +13,7 @@ steps:
       
   - task: Docker@2
     inputs:
-      repository: 'personalhubcontainerregistry.azurecr.io'
+      repository: 'personalhubcontainerregistry'
       command: 'buildAndPush'
       Dockerfile: '**/Dockerfile'
   
