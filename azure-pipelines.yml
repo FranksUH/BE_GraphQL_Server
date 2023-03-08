@@ -6,52 +6,14 @@
 trigger:
 - master
 
-variables:
-  solution: '**/*.sln'
-  allProjects: '**/*.csproj'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+pool:
+  vmImage: 'windows-latest'
 
 steps:
-
-- task: UseDotNet@2
-  displayName: Specify .NET 6.x version
-  inputs:
-    version: '6.x'
-    includePreviewVersions: true
-
-- task: DotNetCoreCLI@2
-  displayName: Restore all required NuGets
-  inputs:
-    command: restore
-    projects: $(allProjects)
-
-- task: DotNetCoreCLI@2
-  displayName: Build Solution
-  inputs:
-    command: build
-    projects: $(allProjects)
-    arguments: '--configuration $(buildConfiguration)'
-
-- task: DotNetCoreCLI@2
-  displayName: Publish Solution
-  inputs:
-    command: publish
-    publishWebProjects: true
-    arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-    zipAfterPublish: True
-
-- task: PublishPipelineArtifact@1
-  displayName: Publish Artifacts
-  inputs:
-    targetPath: '$(Build.ArtifactStagingDirectory)' 
-    artifactName: 'AzurePipelinesLearning'
-
-- task: AzureRmWebAppDeployment@4
-  displayName: Deploy to Azure Slot
-  inputs:
-    ConnectionType: 'AzureRM'
-    azureSubscription: 'Azure subscription 1(1ad07fc5-7991-4ca5-8ff5-8e5d9c7c68d0)'
-    appType: 'webApp'
-    WebAppName: 'markethelper'
-    packageForLinux: '$(Build.ArtifactStagingDirectory)/*.zip'
+  - task: Docker@2
+    inputs:
+      repository: 'developcontainers.azurecr.io'
+      command: 'buildAndPush'
+      Dockerfile: '**/Dockerfile'
+      
+  
