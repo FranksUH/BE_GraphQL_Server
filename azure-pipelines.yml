@@ -10,10 +10,10 @@ pool:
   vmImage: 'windows-latest'
 
 steps:
+      
   - task: Docker@2
     inputs:
-      repository: 'developcontainers.azurecr.io'
+      repository: 'personalhubcontainerregistry.azurecr.io'
       command: 'buildAndPush'
       Dockerfile: '**/Dockerfile'
-      
   
