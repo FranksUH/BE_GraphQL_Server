@@ -16,6 +16,10 @@
         public Repository(ApplicationDbContext appDbContext)
         {
             this.appDbContext = appDbContext;
+
+            //Just for in memory database
+            this.appDbContext.Database.EnsureCreated();
+
             Set = appDbContext.Set<TEntity>();
         }
 

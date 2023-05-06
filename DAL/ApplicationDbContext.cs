@@ -3,6 +3,7 @@
     using DAL.ContextConfiguration;
     using DAL.Entities;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Options;
     using System;
 
     public class ApplicationDbContext : DbContext

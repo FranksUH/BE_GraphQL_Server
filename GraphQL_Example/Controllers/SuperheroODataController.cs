@@ -1,7 +1,6 @@
 ﻿namespace GraphQL_Example.Controllers
 {
     using BLL.Definitions;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.OData.Query;
 

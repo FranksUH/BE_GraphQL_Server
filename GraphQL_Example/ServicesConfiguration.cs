@@ -52,8 +52,9 @@
                             .AddTypeExtension<MovieQuery>();
 
             // Add Application Db Context options
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>  
-                options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));           
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseInMemoryDatabase("TestDb"));
+                        //.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));           
         }
     }
 }

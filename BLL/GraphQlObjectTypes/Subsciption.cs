@@ -11,5 +11,11 @@
         {
             return movie;
         }
+
+        [Subscribe]
+        public Movie MovieRemoved([EventMessage] Movie movie)
+        {
+            return movie;
+        }
     }
 }

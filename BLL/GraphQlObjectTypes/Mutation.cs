@@ -10,8 +10,7 @@
     /// </summary>
     public class Mutation
     {
-        public Movie AddMovie([Service] IRepository<Movie> repository,
-                              [Service] ITopicEventSender sender,
+        public Movie AddMovie([Service] IRepository<Movie> repository, [Service] ITopicEventSender sender,
                               string title, string description, string instructor, Guid? superheroId)
         {
             Movie newMovie = new Movie
@@ -28,6 +27,23 @@
             sender.SendAsync(nameof(Subsciption.MovieAdded), result);
 
             return result;
+        }
+
+        public Guid RemoveMovie([Service] IRepository<Movie> repository, [Service] ITopicEventSender sender,
+                                 Guid id)
+        {
+            if (id == Guid.Empty)
+                throw new ArgumentNullException(nameof(id));
+
+            Movie? movie = repository.Find(id);
+
+            if (movie != null)
+            {
+                repository.Remove(movie);
+                sender.SendAsync(nameof(Subsciption.MovieRemoved), movie);
+            }
+
+            return id;
         }
     }
 }

@@ -16,6 +16,10 @@ var app = builder.Build();
     app.UseSwaggerUI();
 //}
 
+app.UseCors(builder => builder
+    .AllowAnyHeader()
+    .AllowAnyOrigin());
+
 app.UseHttpsRedirection();
 app.UseWebSockets();
 app.MapGraphQL("/graphql");
